@@ -58,12 +58,43 @@ fi
 ls -l $GDALINST
 
 # download and compile gdal version
-if [ ! -d $GDALINST/gdal-2.2.4 ]; then
+if [ ! -d $GDALINST/gdal-1.9.2 ]; then
   cd $GDALBUILD
-  wget http://download.osgeo.org/gdal/2.2.4/gdal-2.2.4.tar.gz
-  tar -xzf gdal-2.2.4.tar.gz
-  cd gdal-2.2.4
-  ./configure --prefix=$GDALINST/gdal-2.2.4 $GDALOPTS
+  wget http://download.osgeo.org/gdal/gdal-1.9.2.tar.gz
+  tar -xzf gdal-1.9.2.tar.gz
+  cd gdal-1.9.2
+  ./configure --prefix=$GDALINST/gdal-1.9.2 $GDALOPTS
+  make -s -j 2
+  make install
+fi
+
+if [ ! -d $GDALINST/gdal-1.11.4 ]; then
+  cd $GDALBUILD
+  wget http://download.osgeo.org/gdal/1.11.4/gdal-1.11.4.tar.gz
+  tar -xzf gdal-1.11.4.tar.gz
+  cd gdal-1.11.4
+  ./configure --prefix=$GDALINST/gdal-1.11.4 $GDALOPTS
+  make -s -j 2
+  make install
+fi
+
+if [ ! -d $GDALINST/gdal-2.0.2 ]; then
+  cd $GDALBUILD
+  wget http://download.osgeo.org/gdal/2.0.2/gdal-2.0.2.tar.gz
+  tar -xzf gdal-2.0.2.tar.gz
+  cd gdal-2.0.2
+  ./configure --prefix=$GDALINST/gdal-2.0.2 $GDALOPTS
+  make -s -j 2
+  make install
+fi
+
+
+if [ ! -d $GDALINST/gdal-2.1.0 ]; then
+  cd $GDALBUILD
+  wget http://download.osgeo.org/gdal/2.1.0beta1/gdal-2.1.0beta1.tar.gz
+  tar -xzf gdal-2.1.0beta1.tar.gz
+  cd gdal-2.1.0beta1
+  ./configure --prefix=$GDALINST/gdal-2.1.0 $GDALOPTS
   make -s -j 2
   make install
 fi
