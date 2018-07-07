@@ -7,6 +7,10 @@ addons:
     packages:
     - gdal-bin
     - libgdal-dev
+env:
+  global:
+    - CPLUS_INCLUDE_PATH=/usr/include/gdal
+    - C_INCLUDE_PATH=/usr/include/gdal
 install:
   - pip install -r requirements.txt
 script:
