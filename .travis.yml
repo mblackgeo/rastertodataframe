@@ -1,17 +1,30 @@
 language: python
 python:
   - "3.6"
-cache: pip
+cache:
+  directories:
+    - $GDALINST
+    - ~/.cache/pip
 addons:
   apt:
     packages:
+    - libgdal1h
     - gdal-bin
+    - libproj-dev
     - libgdal-dev
 env:
   global:
-    - CPLUS_INCLUDE_PATH=/usr/include/gdal
-    - C_INCLUDE_PATH=/usr/include/gdal
+    - GDALVERSION="2.2.4"
+    - GDALINST=$HOME/gdalinstall
+    - GDALBUILD=$HOME/gdalbuild
+before-install:
+  - pip install -U pip
+  - pip install wheel
+  - . ./scripts/travis_gdal_install.sh
+  - export PATH=$GDALINST/gdal-$GDALVERSION/bin:$PATH
+  - export LD_LIBRARY_PATH=$GDALINST/gdal-$GDALVERSION/lib:$LD_LIBRARY_PATH
 install:
+  - "if [ $(gdal-config --version) == \"$GDALVERSION\" ]; then echo \"Using gdal $GDALVERSION\"; else echo \"NOT using gdal $GDALVERSION as expected; aborting\"; exit 1; fi"
   - pip install -r requirements.txt
 script:
-  - py.test --cov-report term-missing --cov app -v
+  - py.test
