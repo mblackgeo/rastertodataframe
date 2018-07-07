@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # originally contributed by @rbuffat to Toblerity/Fiona
-set -ex
+set -e
 
 GDALOPTS="  --with-ogr \
             --with-geos \
@@ -16,8 +16,8 @@ GDALOPTS="  --with-ogr \
             --without-libgrass \
             --without-cfitsio \
             --without-pcraster \
-            --without-netcdf \
-            --with-png \
+            --with-netcdf \
+            --with-png=internal \
             --with-jpeg=internal \
             --without-gif \
             --without-ogdi \
@@ -57,44 +57,33 @@ fi
 
 ls -l $GDALINST
 
-# download and compile gdal version
-if [ ! -d $GDALINST/gdal-1.9.2 ]; then
+if [ "$GDALVERSION" = "master" ]; then
   cd $GDALBUILD
-  wget http://download.osgeo.org/gdal/gdal-1.9.2.tar.gz
-  tar -xzf gdal-1.9.2.tar.gz
-  cd gdal-1.9.2
-  ./configure --prefix=$GDALINST/gdal-1.9.2 $GDALOPTS
-  make -s -j 2
-  make install
+  git clone --depth 1 https://github.com/OSGeo/gdal gdal-$GDALVERSION
+  cd gdal-$GDALVERSION/gdal
+  git rev-parse HEAD > newrev.txt
+  BUILD=no
+  # Only build if nothing cached or if the GDAL revision changed
+  if test ! -f $GDALINST/gdal-$GDALVERSION/rev.txt; then
+    BUILD=yes
+  elif ! diff newrev.txt $GDALINST/gdal-$GDALVERSION/rev.txt >/dev/null; then
+    BUILD=yes
+  fi
+  if test "$BUILD" = "yes"; then
+    mkdir -p $GDALINST/gdal-$GDALVERSION
+    cp newrev.txt $GDALINST/gdal-$GDALVERSION/rev.txt
+    ./configure --prefix=$GDALINST/gdal-$GDALVERSION $GDALOPTS
+    make -s -j 2
+    make install
+  fi
 fi
 
-if [ ! -d $GDALINST/gdal-1.11.4 ]; then
+if [ "$GDALVERSION" != "master" -a ! -d "$GDALINST/gdal-$GDALVERSION" ]; then
   cd $GDALBUILD
-  wget http://download.osgeo.org/gdal/1.11.4/gdal-1.11.4.tar.gz
-  tar -xzf gdal-1.11.4.tar.gz
-  cd gdal-1.11.4
-  ./configure --prefix=$GDALINST/gdal-1.11.4 $GDALOPTS
-  make -s -j 2
-  make install
-fi
-
-if [ ! -d $GDALINST/gdal-2.0.2 ]; then
-  cd $GDALBUILD
-  wget http://download.osgeo.org/gdal/2.0.2/gdal-2.0.2.tar.gz
-  tar -xzf gdal-2.0.2.tar.gz
-  cd gdal-2.0.2
-  ./configure --prefix=$GDALINST/gdal-2.0.2 $GDALOPTS
-  make -s -j 2
-  make install
-fi
-
-
-if [ ! -d $GDALINST/gdal-2.1.0 ]; then
-  cd $GDALBUILD
-  wget http://download.osgeo.org/gdal/2.1.0beta1/gdal-2.1.0beta1.tar.gz
-  tar -xzf gdal-2.1.0beta1.tar.gz
-  cd gdal-2.1.0beta1
-  ./configure --prefix=$GDALINST/gdal-2.1.0 $GDALOPTS
+  wget http://download.osgeo.org/gdal/$GDALVERSION/gdal-$GDALVERSION.tar.gz
+  tar -xzf gdal-$GDALVERSION.tar.gz
+  cd gdal-$GDALVERSION
+  ./configure --prefix=$GDALINST/gdal-$GDALVERSION $GDALOPTS
   make -s -j 2
   make install
 fi
