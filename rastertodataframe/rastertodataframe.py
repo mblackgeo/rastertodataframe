@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
 
-import rasterio
 import pandas as pd
 import geopandas as gpd
 
@@ -26,8 +25,8 @@ def raster_to_dataframe(raster_path, vector_path=None):
     -------
     pandas.core.frame.DataFrame
     """
-    raster = util._open_raster(raster_path)
-    vector = util._open_vector(vector_path) if vector_path is not None else None
+    raster = util.open_raster(raster_path)
+    vector = util.open_vector(vector_path) if vector_path is not None else None
 
     # If vector:
     #    Get vector mask (either all features or by a specific vector field).
