@@ -53,4 +53,12 @@
       <MDI key="STATISTICS_STDDEV">1727.350507706</MDI>
     </Metadata>
   </PAMRasterBand>
+  <PAMRasterBand band="4">
+    <Metadata>
+      <MDI key="STATISTICS_MAXIMUM">18832</MDI>
+      <MDI key="STATISTICS_MEAN">8716.6492740472</MDI>
+      <MDI key="STATISTICS_MINIMUM">5871</MDI>
+      <MDI key="STATISTICS_STDDEV">2938.1294401417</MDI>
+    </Metadata>
+  </PAMRasterBand>
 </PAMDataset>
