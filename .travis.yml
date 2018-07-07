@@ -14,9 +14,14 @@ addons:
     - libgdal-dev
 env:
   global:
-    - GDALVERSION="2.2.4"
     - GDALINST=$HOME/gdalinstall
     - GDALBUILD=$HOME/gdalbuild
+  matrix:
+    - GDALVERSION="1.9.2"
+    - GDALVERSION="1.10.0"  # doesn't exist but path/lib will fall back to system
+    - GDALVERSION="1.11.4"
+    - GDALVERSION="2.0.2"
+    - GDALVERSION="2.1.0"
 before-install:
   - pip install -U pip
   - pip install wheel
