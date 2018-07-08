@@ -1,4 +1,4 @@
-name: dev
+name: rastertodataframe
 channels:
   - conda-forge
   - defaults
@@ -7,6 +7,7 @@ dependencies:
   - geopandas=0.3.0=py36_0
   - pandas=0.23.2=py36_0
   - pyproj=1.9.5.1=py36_0
+  - numpy=1.14.2=py36hdbf6ddf_1
   - pip:
     - coverage==4.5.1
     - flake8==3.5.0
