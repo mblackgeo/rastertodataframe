@@ -51,9 +51,11 @@ Features
 Installation
 ------------
 
+.. code-block:: python
+
+        pip install rastertodataframe
+
 * A working GDAL/OGR installation is required. This is best accomplished with ``conda``.
-* Clone this repository and install with ``pip install -e /path/to/rastertodataframe``.
-* Coming soon: ``pip install rastertodataframe``.
 
 
 Credits
