@@ -98,16 +98,16 @@ class TestRasterToDataFrameUtil(unittest.TestCase):
         os.close(fid)
         os.remove(tmp_fname)
 
-    def test__brun_vector_mask_into_raster_wrong_epsg(self):
+    def test__burn_vector_mask_into_raster_wrong_epsg(self):
         # Error for differing projections.
         with self.assertRaises(ValueError):
-            out = util._burn_vector_mask_into_raster(
+            out = util.burn_vector_mask_into_raster(
                 self.raster_path, self.vector_path, '')
 
     def test__burn_vector_mask_into_raster_vector_mask(self):
         # Burn in a specified vector field.
         fid, tmp_fname = tempfile.mkstemp()
-        out = util._burn_vector_mask_into_raster(
+        out = util.burn_vector_mask_into_raster(
             self.raster_wgs84_path, self.vector_path, tmp_fname)
 
         arr = out.GetRasterBand(1).ReadAsArray()
@@ -121,7 +121,7 @@ class TestRasterToDataFrameUtil(unittest.TestCase):
     def test__burn_vector_mask_into_raster_vector_field(self):
         # Burn in a specified vector field.
         fid, tmp_fname = tempfile.mkstemp()
-        out = util._burn_vector_mask_into_raster(
+        out = util.burn_vector_mask_into_raster(
             self.raster_wgs84_path, self.vector_path, tmp_fname,
             vector_field='value')
 
@@ -132,3 +132,13 @@ class TestRasterToDataFrameUtil(unittest.TestCase):
 
         os.close(fid)
         os.remove(tmp_fname)
+
+    def test_get_raster_band_names(self):
+        ras = gdal.OpenShared(self.raster_path)
+        band_names = util.get_raster_band_names(ras)
+        expected = ['Band_1', 'Band_2', 'Band_3', 'Band_4']
+        self.assertListEqual(band_names, expected)
+
+    def test_extract_mask_px(self):
+        # TODO
+        pass

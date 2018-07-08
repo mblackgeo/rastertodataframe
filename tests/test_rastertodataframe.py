@@ -21,5 +21,20 @@ class TestRasterToDataFrame(unittest.TestCase):
         self.raster_wgs84_path = os.path.join(test_data_path,
                                               'raster_epsg4326.tif')
 
-    def test_raster_to_dataframe(self):
-        pass
+    def test_raster_to_dataframe_with_vector(self):
+        out_df = raster_to_dataframe(
+            self.raster_wgs84_path, vector_path=self.vector_path)
+
+        expected_cols = ['Band_1', 'Band_2', 'Band_3', 'Band_4',
+                         'fid', 'value', 'value_string']
+
+        self.assertEqual(out_df.shape, (267, 7))
+        self.assertCountEqual(list(out_df.columns), expected_cols)
+
+    def test_raster_to_dataframe_without_vector(self):
+        out_df = raster_to_dataframe(self.raster_path)
+
+        expected_cols = ['Band_1', 'Band_2', 'Band_3', 'Band_4']
+
+        self.assertEqual(out_df.shape, (2204, 4))
+        self.assertCountEqual(list(out_df.columns), expected_cols)
