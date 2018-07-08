@@ -196,8 +196,8 @@ def _create_empty_raster(template, out_path, n_bands=1, no_data_value=None):
     return out_dataset
 
 
-def _burn_vector_mask_into_raster(raster_path, vector_path, out_path,
-                                  vector_field=None):
+def burn_vector_mask_into_raster(raster_path, vector_path, out_path,
+                                 vector_field=None):
     """Create a new raster based on the input raster with vector features
         burned into the raster. To be used as a mask for pixels in the vector.
 
@@ -253,3 +253,65 @@ def _burn_vector_mask_into_raster(raster_path, vector_path, out_path,
     out_ds = None
 
     return open_raster(out_path)
+
+
+def get_raster_band_names(raster):
+    """Obtain the names of bands from a raster. The raster metadata is queried
+    first, if no names a present, a 1-index list of band_N is returned.
+
+    Parameters
+    ----------
+    raster : gdal.Dataset
+
+    Returns
+    -------
+    list[str]
+    """
+    band_names = []
+    for i in range(1, raster.RasterCount + 1):
+        band = raster.GetRasterBand(i)
+
+        if band.GetDescription():
+            # Use the band description.
+            band_names.append(band.GetDescription())
+        else:
+            # Check for metedata.
+            this_band_name = 'Band_{}'.format(band.GetBand())
+            metadata = band.GetDataset().GetMetadata_Dict()
+
+            # If in metadata, return the metadata entry, else Band_N.
+            if this_band_name in metadata and metadata[this_band_name]:
+                band_names.append(metadata[this_band_name])
+            else:
+                band_names.append(this_band_name)
+
+    return band_names
+
+
+def extract_masked_px(ras, mask, mask_val=None):
+    """Extract raster values according to a mask.
+
+    Parameters
+    ----------
+    ras : np.ndarray
+        2D or 3D input data in the form [bands][y][x].
+    mask : np.ndarray
+        1D or 2D with zeroes to mask data.
+    mask_val : int
+        Value of the data pixels in the mask. Default: non-zero.
+
+    Returns
+    -------
+    np.ndarray
+        Array of non-masked data.
+    """
+    if mask is None:
+        return ras
+
+    # Use the mask to get the indices of the non-zero pixels.
+    if mask_val:
+        (i, j) = (mask == mask_val).nonzero()
+    else:
+        (i, j) = mask.nonzero()
+
+    return (ras[i, j] if ras.ndim == 2 else ras[:, i, j])
