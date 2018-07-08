@@ -28,6 +28,6 @@ install:
 
 script:
   # Your test script goes here
-  python -m pytest -v --junitxml=result.xml --cov reastertodataframe --cov-report term-missing
+  python -m pytest -v --junitxml=result.xml --cov rastertodataframe --cov-report term-missing
 after_success:
   - coveralls
