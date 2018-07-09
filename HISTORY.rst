@@ -2,6 +2,12 @@
 History
 =======
 
+0.1.3 (2018-07-09)
+------------------
+
+* Remove dependencies to fix non-building installs.
+
+
 0.1.2 (2018-07-09)
 ------------------
 
