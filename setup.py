@@ -11,13 +11,7 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = [
-    "GDAL",
-    "geopandas",
-    "pandas",
-    "pyproj",
-    "numpy"
-]
+requirements = []
 
 setup_requirements = ['pytest-runner', ]
 
