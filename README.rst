@@ -55,7 +55,11 @@ Installation
 
         pip install rastertodataframe
 
-* A working GDAL/OGR installation is required. This is best accomplished with ``conda``.
+* A working GDAL/OGR installation is required. This is best accomplished with `conda <https://conda.io/miniconda.html>`_.
+
+.. code-block:: python
+
+        conda install -c conda-forge numpy gdal geopandas pandas pyproj
 
 
 Credits

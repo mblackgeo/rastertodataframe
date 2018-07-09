@@ -5,10 +5,6 @@
 
 import os
 import unittest
-import tempfile
-
-from osgeo import gdal, ogr
-import geopandas as gpd
 
 from rastertodataframe import raster_to_dataframe
 

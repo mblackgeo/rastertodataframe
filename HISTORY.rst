@@ -2,6 +2,11 @@
 History
 =======
 
+0.1.2 (2018-07-09)
+------------------
+
+* Fix creation of temporary files on windows.
+
 0.1.1 (2018-07-08)
 ------------------
 
