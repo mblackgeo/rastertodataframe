@@ -1,5 +1,5 @@
 Welcome to Raster To DataFrame's documentation!
-======================================
+===============================================
 
 .. toctree::
    :maxdepth: 2
