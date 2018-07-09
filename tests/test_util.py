@@ -6,6 +6,8 @@
 import os
 import unittest
 import tempfile
+import shutil
+import uuid
 
 from osgeo import gdal, ogr
 import geopandas as gpd
@@ -20,6 +22,12 @@ class TestRasterToDataFrameUtil(unittest.TestCase):
         self.vector_path = os.path.join(test_data_path, 'vector.geojson')
         self.raster_wgs84_path = os.path.join(test_data_path,
                                               'raster_epsg4326.tif')
+
+        # Temporary output directory for files.
+        self.temp_dir = tempfile.mkdtemp()
+
+    def tearDown(self):
+        shutil.rmtree(self.temp_dir, ignore_errors=True)
 
     def test_open_raster(self):
         ras = util.open_raster(self.raster_path)
@@ -85,7 +93,8 @@ class TestRasterToDataFrameUtil(unittest.TestCase):
         self.assertTrue(util.same_epsg(ras, ras))
 
     def test__create_empty_raster(self):
-        fid, tmp_fname = tempfile.mkstemp()
+        tmp_fname = os.path.join(self.temp_dir, str(uuid.uuid1()))
+
         ras = gdal.OpenShared(self.raster_path)
         out = util._create_empty_raster(
             ras, tmp_fname, n_bands=1, no_data_value=0)
@@ -95,18 +104,16 @@ class TestRasterToDataFrameUtil(unittest.TestCase):
         self.assertEqual(ras.RasterXSize, out.RasterXSize)
         self.assertEqual(ras.RasterYSize, out.RasterYSize)
 
-        os.close(fid)
-        os.remove(tmp_fname)
-
-    def test__burn_vector_mask_into_raster_wrong_epsg(self):
+    def test_burn_vector_mask_into_raster_wrong_epsg(self):
         # Error for differing projections.
         with self.assertRaises(ValueError):
-            out = util.burn_vector_mask_into_raster(
+            _ = util.burn_vector_mask_into_raster(
                 self.raster_path, self.vector_path, '')
 
-    def test__burn_vector_mask_into_raster_vector_mask(self):
+    def test_burn_vector_mask_into_raster_vector_mask(self):
         # Burn in a specified vector field.
-        fid, tmp_fname = tempfile.mkstemp()
+        tmp_fname = os.path.join(self.temp_dir, str(uuid.uuid1()))
+
         out = util.burn_vector_mask_into_raster(
             self.raster_wgs84_path, self.vector_path, tmp_fname)
 
@@ -115,12 +122,10 @@ class TestRasterToDataFrameUtil(unittest.TestCase):
         self.assertEqual(arr.ndim, 2)
         self.assertEqual(arr.max(), 1)
 
-        os.close(fid)
-        os.remove(tmp_fname)
-
-    def test__burn_vector_mask_into_raster_vector_field(self):
+    def test_burn_vector_mask_into_raster_vector_field(self):
         # Burn in a specified vector field.
-        fid, tmp_fname = tempfile.mkstemp()
+        tmp_fname = os.path.join(self.temp_dir, str(uuid.uuid1()))
+
         out = util.burn_vector_mask_into_raster(
             self.raster_wgs84_path, self.vector_path, tmp_fname,
             vector_field='value')
@@ -129,9 +134,6 @@ class TestRasterToDataFrameUtil(unittest.TestCase):
         self.assertEqual(arr.shape, (39, 58))
         self.assertEqual(arr.ndim, 2)
         self.assertEqual(arr.max(), 2000)
-
-        os.close(fid)
-        os.remove(tmp_fname)
 
     def test_get_raster_band_names(self):
         ras = gdal.OpenShared(self.raster_path)
