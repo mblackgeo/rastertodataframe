@@ -4,7 +4,7 @@
 
 __author__ = """Martin Black"""
 __email__ = 'mblack@posteo.de'
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 from .rastertodataframe import *
 from . import util
