@@ -17,7 +17,7 @@ from rastertodataframe import util
 
 class TestRasterToDataFrameUtil(unittest.TestCase):
     def setUp(self):
-        test_data_path = os.path.join(os.path.dirname(__file__))
+        test_data_path = os.path.join(os.path.dirname(__file__), 'data')
         self.raster_path = os.path.join(test_data_path, 'raster.tif')
         self.vector_path = os.path.join(test_data_path, 'vector.geojson')
         self.raster_wgs84_path = os.path.join(test_data_path,
