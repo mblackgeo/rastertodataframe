@@ -8,7 +8,7 @@ import shutil
 import numpy as np
 import pandas as pd
 
-from rastertodataframe import util
+from rastertodataframe import util, tiling
 
 log = logging.getLogger(__name__)
 
@@ -59,31 +59,44 @@ def raster_to_dataframe(raster_path, vector_path=None):
             vector_field='__fid__')
 
         # Loop over mask values to extract pixels.
+        tile_dfs = []  # DataFrames of each tile.
         mask_arr = vector_mask.GetRasterBand(1).ReadAsArray()
-        ras_arr = ras.ReadAsArray()  # TODO this is not memory efficient.
 
-        out_dfs = []
-        for mask_val in mask_values:
-            pixels = util.extract_masked_px(ras_arr, mask_arr, mask_val=mask_val)\
-                .transpose()
-            fid_px = np.ones(pixels.shape[0]) * mask_val
+        for ras_arr in tiling.tiles(ras):
 
-            mask_df = pd.DataFrame(pixels, columns=raster_band_names)
-            mask_df['__fid__'] = fid_px
-            out_dfs.append(mask_df)
+            mask_dfs = []  # DataFrames of each mask.
+            for mask_val in mask_values:
 
-        # Fill DataFrame with pixels.
-        out_df = pd.concat(out_dfs)
+                # Extract only masked pixels.
+                pixels = util.get_pixels(
+                    ras_arr, mask_arr, mask_val=mask_val)\
+                    .transpose()
+                fid_px = np.ones(pixels.shape[0]) * mask_val
 
-        # Join with vector attributes.
-        out_df = out_df.merge(vec_gdf, how='left', on='__fid__')
+                # Create a DataFrame of masked pixels and their FID.
+                mask_df = pd.DataFrame(pixels, columns=raster_band_names)
+                mask_df['__fid__'] = fid_px
+                mask_dfs.append(mask_df)
+
+            # Concat the mask DataFrames.
+            mask_df = pd.concat(mask_dfs)
+
+            # Join with pixels with vector attributes using the FID.
+            tile_dfs.append(mask_df.merge(vec_gdf, how='left', on='__fid__'))
+
+        # Merge all the tiles.
+        out_df = pd.concat(tile_dfs)
 
     else:
         # No vector given, simply load the raster.
-        ras_arr = ras.ReadAsArray()  # TODO not memory efficient.
-        mask_arr = np.ones((ras_arr.shape[1], ras_arr.shape[2]))
-        pixels = util.extract_masked_px(ras_arr, mask_arr).transpose()
-        out_df = pd.DataFrame(pixels, columns=raster_band_names)
+        tile_dfs = []  # DataFrames of each tile.
+        for ras_arr in tiling.tiles(ras):
+            mask_arr = np.ones((ras_arr.shape[1], ras_arr.shape[2]))
+            pixels = util.get_pixels(ras_arr, mask_arr).transpose()
+            tile_dfs.append(pd.DataFrame(pixels, columns=raster_band_names))
+
+        # Merge all the tiles.
+        out_df = pd.concat(tile_dfs)
 
     # TODO mask no data values.
 
