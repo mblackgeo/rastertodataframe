@@ -288,15 +288,15 @@ def get_raster_band_names(raster):
     return band_names
 
 
-def extract_masked_px(ras, mask, mask_val=None):
-    """Extract raster values according to a mask.
+def get_pixels(ras, mask, mask_val=None):
+    """Get pixels from a raster (with optional mask).
 
     Parameters
     ----------
     ras : np.ndarray
-        2D or 3D input data in the form [bands][y][x].
+        Array of raster data in the form [bands][y][x].
     mask : np.ndarray
-        1D or 2D with zeroes to mask data.
+        Array (2D) of zeroes to mask data.
     mask_val : int
         Value of the data pixels in the mask. Default: non-zero.
 
