@@ -9,6 +9,7 @@ import tempfile
 import shutil
 import uuid
 
+import numpy as np
 from osgeo import gdal, ogr
 import geopandas as gpd
 
@@ -92,6 +93,10 @@ class TestRasterToDataFrameUtil(unittest.TestCase):
         self.assertFalse(util.same_epsg(ras, gdf))
         self.assertTrue(util.same_epsg(ras, ras))
 
+    def test_get_epsg_no_epsg(self):
+        with self.assertRaises(ValueError):
+            util.get_epsg([])
+
     def test__create_empty_raster(self):
         tmp_fname = os.path.join(self.temp_dir, str(uuid.uuid1()))
 
@@ -141,6 +146,19 @@ class TestRasterToDataFrameUtil(unittest.TestCase):
         expected = ['Band_1', 'Band_2', 'Band_3', 'Band_4']
         self.assertListEqual(band_names, expected)
 
-    def test_extract_mask_px(self):
-        # TODO
-        pass
+    def test_get_pixels(self):
+        arr = np.ones((1, 10, 10))
+
+        # No mask.
+        out = util.get_pixels(arr, None)
+        np.testing.assert_array_equal(arr, out)
+
+        # Non-zero (default if no mask value).
+        mask = np.ones((10, 10))
+        out = util.get_pixels(arr, mask)
+        self.assertEqual(np.sum(out.flatten()), 100)
+
+        # Only 1 valid pixel.
+        mask[1, 1] = 5
+        out = util.get_pixels(arr, mask, mask_val=5)
+        self.assertEqual(np.sum(out.flatten()), 1)
