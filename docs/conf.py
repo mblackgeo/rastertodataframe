@@ -102,6 +102,39 @@ pygments_style = 'sphinx'
 todo_include_todos = False
 
 
+# Auto create apidoc
+# See https://github.com/rtfd/readthedocs.org/issues/1139
+
+
+def run_apidoc(_):
+
+    current_dir = os.path.abspath(os.path.dirname(__file__))
+    module = os.path.join(current_dir, "..", "rastertodataframe")
+
+    argv = [
+        "-f",
+        "-T",
+        "-e",
+        "-M",
+        "-o", current_dir,
+        module
+    ]
+
+    try:
+        # Sphinx 1.7+
+        from sphinx.ext import apidoc
+        apidoc.main(argv)
+    except ImportError:
+        # Sphinx 1.6 (and earlier)
+        from sphinx import apidoc
+        argv.insert(0, apidoc.__file__)
+        apidoc.main(argv)
+
+
+def setup(app):
+    app.connect('builder-inited', run_apidoc)
+
+
 # -- Options for HTML output -------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
