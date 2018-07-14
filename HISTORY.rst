@@ -2,11 +2,15 @@
 History
 =======
 
+0.2.0 (2018-07-12)
+------------------
+
+* Implement tiling to reduce memory use for large rasters.
+
 0.1.3 (2018-07-09)
 ------------------
 
 * Remove dependencies to fix non-building installs.
-
 
 0.1.2 (2018-07-09)
 ------------------

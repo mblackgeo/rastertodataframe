@@ -45,7 +45,7 @@ Features
 --------
 
 * Convert any GDAL compatible raster to a Pandas DataFrame.
-* Optionally, if any OGR compatible vector file is given, only pixels touched by the vector are extracted from the raster. The output DataFrame includes these pixels as well as any attributed from the vector file.
+* Optionally, if any OGR compatible vector file is given, only pixels touched by the vector are extracted from the raster. The output DataFrame includes these pixels as well as any attributes from the vector file.
 
 
 Installation
