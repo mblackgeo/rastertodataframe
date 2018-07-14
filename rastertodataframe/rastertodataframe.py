@@ -16,8 +16,6 @@ log = logging.getLogger(__name__)
 def raster_to_dataframe(raster_path, vector_path=None):
     """Convert a raster to a Pandas DataFrame.
 
-    .. note:: This requires enough memory to load the entire raster.
-
     Parameters
     ----------
     raster_path : str
