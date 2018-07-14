@@ -157,7 +157,7 @@ def same_epsg(data1, data2):
 
 def _create_empty_raster(template, out_path, n_bands=1, no_data_value=None):
     """Create a new empty raster using GDAL. Inherits all but the data from the
-        given template dataset.
+    given template dataset.
 
     Parameters
     ----------
@@ -199,7 +199,7 @@ def _create_empty_raster(template, out_path, n_bands=1, no_data_value=None):
 def burn_vector_mask_into_raster(raster_path, vector_path, out_path,
                                  vector_field=None):
     """Create a new raster based on the input raster with vector features
-        burned into the raster. To be used as a mask for pixels in the vector.
+    burned into the raster. To be used as a mask for pixels in the vector.
 
     Parameters
     ----------

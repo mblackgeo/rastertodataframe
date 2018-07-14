@@ -7,4 +7,5 @@ __email__ = 'mblack@posteo.de'
 __version__ = '0.2.0'
 
 from .rastertodataframe import *
-from . import util
+from .util import *
+from .tiling import *
