@@ -7,7 +7,7 @@ Raster To DataFrame
         :target: https://pypi.python.org/pypi/rastertodataframe
         :alt: PyPI Status
 
-.. image:: https://img.shields.io/travis/mblack20/rastertodataframe.svg
+.. image:: https://travis-ci.org/mblack20/rastertodataframe.svg?branch=master
         :target: https://travis-ci.org/mblack20/rastertodataframe
         :alt: Build Status
 
