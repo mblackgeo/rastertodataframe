@@ -98,7 +98,7 @@ def _get_gpd_epsg(gdf):
 def _epsg_from_projection(prj):
     """Return the EPSG code from a projection string.
 
-    Parametres
+    Parameters
     ----------
     prj : str
 

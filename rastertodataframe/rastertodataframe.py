@@ -30,7 +30,7 @@ def raster_to_dataframe(raster_path, vector_path=None):
     pandas.core.frame.DataFrame
     """
     # Placeholders for possible temporary files.
-    temp_dir = tmp_fname = vector_mask_fname = None
+    temp_dir = vector_mask_fname = None
 
     # Get raster band names.
     ras = util.open_raster(raster_path)
@@ -89,7 +89,12 @@ def raster_to_dataframe(raster_path, vector_path=None):
         # No vector given, simply load the raster.
         tile_dfs = []  # DataFrames of each tile.
         for ras_arr in tiling.tiles(ras):
-            mask_arr = np.ones((ras_arr.shape[1], ras_arr.shape[2]))
+
+            idx = (1, 2)  # Assume multiband
+            if ras_arr.ndim == 2:
+                idx = (0, 1)  # Handle single band rasters
+
+            mask_arr = np.ones((ras_arr.shape[idx[0]], ras_arr.shape[idx[1]]))
             pixels = util.get_pixels(ras_arr, mask_arr).transpose()
             tile_dfs.append(pd.DataFrame(pixels, columns=raster_band_names))
 
