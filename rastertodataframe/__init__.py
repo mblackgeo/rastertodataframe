@@ -1,5 +1,5 @@
+# flake8: noqa
 # -*- coding: utf-8 -*-
-
 """Top-level package for Raster To DataFrame."""
 
 __author__ = """Martin Black"""
